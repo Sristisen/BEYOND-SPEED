@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beyond Speed | Transparency Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #map { height: 400px; border-radius: 12px; }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <nav class="bg-emerald-600 p-4 text-white shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold tracking-tight">BEYOND SPEED</h1>
+            <span class="bg-emerald-800 px-3 py-1 rounded-full text-xs">Project: Quick Commerce Transparency</span>
+        </div>
+    </nav>
+
+    <main class="container mx-auto py-8 px-4">
+        <div class="grid lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-1 space-y-6">
+                <div class="glass p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <h2 class="text-gray-500 uppercase text-xs font-bold mb-4">Sourcing Transparency</h2>
+                    <div class="flex items-center space-x-4">
+                        <div class="h-12 w-12 bg-emerald-100 rounded-full flex items-center justify-center">
+                            🛒
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-800" id="vendor-name">Gupta Ji's Kirana Store</p>
+                            <p class="text-sm text-gray-500">Verified Local Partner #QC-992</p>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    <div class="text-sm space-y-2">
+                        <p><strong>Status:</strong> <span class="text-emerald-600 font-medium">Order Picked Up</span></p>
+                        <p><strong>Distance to you:</strong> 1.2 km</p>
+                        <p><strong>Impact:</strong> <span class="text-blue-600">Saved 400g CO2</span> vs. Dark Store</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <h2 class="text-gray-500 uppercase text-xs font-bold mb-2">Blockchain Proof of Origin</h2>
+                    <code class="text-[10px] block bg-gray-100 p-2 rounded break-all">
+                        Hash: 0x71C24B...4e92 (Verified)
+                    </code>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <div id="map" class="shadow-inner border-2 border-white"></div>
+                <div class="mt-4 flex justify-between items-center">
+                    <p class="text-sm text-gray-600 italic">"Live sourcing data refreshed every 5s"</p>
+                    <button onclick="simulateMovement()" class="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition">
+                        Simulate Delivery
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialize Map (Pune coordinates as example)
+        var map = L.map('map').setView([18.5204, 73.8567], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        // Custom Icons
+        const vendorIcon = L.divIcon({html: '🏪', className: 'text-2xl'});
+        const userIcon = L.divIcon({html: '🏠', className: 'text-2xl'});
+        const driverIcon = L.divIcon({html: '🛵', className: 'text-2xl'});
+
+        // Positions
+        const vendorLoc = [18.5230, 73.8580];
+        const userLoc = [18.5204, 73.8567];
+        let driverPos = [18.5230, 73.8580];
+
+        L.marker(vendorLoc, {icon: vendorIcon}).addTo(map).bindPopup('Local Vendor');
+        L.marker(userLoc, {icon: userIcon}).addTo(map).bindPopup('Your Home');
+        let driverMarker = L.marker(driverPos, {icon: driverIcon}).addTo(map);
+
+        // Simulation Logic
+        function simulateMovement() {
+            let steps = 0;
+            const interval = setInterval(() => {
+                steps += 0.05;
+                // Move marker from vendor to user
+                driverPos[0] -= 0.0001; 
+                driverPos[1] -= 0.0001;
+                driverMarker.setLatLng(driverPos);
+                
+                if (steps >= 1) clearInterval(interval);
+            }, 500);
+        }
+    </script>
+</body>
+</html>
